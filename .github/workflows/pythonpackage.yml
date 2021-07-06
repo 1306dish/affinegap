@@ -85,9 +85,14 @@ jobs:
           python -m pip install --upgrade pip && \
           pip install twine wheel && \
           pip wheel -w dist --no-deps . && \
-          twine upload dist/* && \
+          #twine upload dist/* && \
           deactivate'
       continue-on-error: true
+    - name: Upload artifacts
+      run: |
+        ls dist/ && \
+        twine upload dist/*
+      
   manylinux_sdist:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     needs: test
