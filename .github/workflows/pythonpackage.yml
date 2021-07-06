@@ -63,16 +63,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: docker/setup-qemu-action@v1
-    - name: Install dependencies
-      run: |
-        docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-          ${{ env.img }} \
-          bash -exc '\
-          ${{ env.py }} -m pip install --upgrade pip && \
-          ${{ env.py }} -m pip install -e .'        
-          
-    - name: Test wheel with pytest
+    - uses: docker/setup-qemu-action@v1       
+    - name: Test with pytest
       run: |
         docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
           ${{ env.img }} \
