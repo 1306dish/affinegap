@@ -85,13 +85,21 @@ jobs:
           python -m pip install --upgrade pip && \
           pip install twine wheel && \
           pip wheel -w dist --no-deps . && \
-          #twine upload dist/* && \
           deactivate'
       continue-on-error: true
-    - name: Upload artifacts
+    - name: Publish wheels to PyPI
       run: |
-        ls dist/ && \
+        ls dist
+    - name: Publish wheels to PyPI
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        pip install twine
+        ls
+        twine upload --skip-existing wheelhouse/*-manylinux2014_aarch64.whl
         twine upload dist/*
+      continue-on-error: true
       
   manylinux_sdist:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
@@ -117,6 +125,7 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         pip install twine
+        ls
         twine upload --skip-existing wheelhouse/*-manylinux1_x86_64.whl
         twine upload dist/*
       continue-on-error: true
