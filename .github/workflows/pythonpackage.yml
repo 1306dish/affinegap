@@ -76,7 +76,7 @@ jobs:
           pip install pytest && \
           pytest && \
           deactivate'
-    - name: Build and publish
+    - name: Build aarch64 wheel
       run: |
         docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
           ${{ env.img }} \
@@ -85,20 +85,20 @@ jobs:
           python -m pip install --upgrade pip && \
           pip install twine wheel && \
           pip wheel -w dist --no-deps . && \
+          auditwheel repair dist/*.whl --wheel-dir wheelhouse/ && \
           deactivate'
       continue-on-error: true
-    - name: Publish wheels to PyPI
+    - name: list wheels
       run: |
         ls dist
+        ls wheelhouse
     - name: Publish wheels to PyPI
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         pip install twine
-        ls
-        twine upload --skip-existing wheelhouse/*-manylinux2014_aarch64.whl
-        twine upload dist/*
+        twine upload wheelhouse/*-manylinux2014_aarch64.whl
       continue-on-error: true
       
   manylinux_sdist:
