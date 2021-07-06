@@ -90,7 +90,6 @@ jobs:
       continue-on-error: true
     - name: list wheels
       run: |
-        ls dist
         ls wheelhouse
     - name: Publish wheels to PyPI
       env:
@@ -98,7 +97,7 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         pip install twine
-        twine upload wheelhouse/*-manylinux2014_aarch64.whl
+        twine upload wheelhouse/*manylinux2014_aarch64.whl
       continue-on-error: true
       
   manylinux_sdist:
